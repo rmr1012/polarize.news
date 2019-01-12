@@ -1,13 +1,5 @@
-FROM ubuntu:16.04
+FROM polarize_base:latest
 
 COPY . .
-
-
-RUN apt-get update
-RUN apt-get -y upgrade
-
-RUN apt-get install -y tmux python3 python-setuptools python-dev python-pip
-
-
-RUN pip install -r requirements.txt
-
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
