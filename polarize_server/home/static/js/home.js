@@ -1,5 +1,5 @@
 
-var topWords= {"trump":null,"president":null,"government":null,"shutdown":null,"border":null,"donald":null,"christmas":null,"washington":null,"police":null,"national":null,"democrats":null,"republicans":null,"syria":null,"security":null,"senate":null,"china":null,"california":null,"election":null,"war":null,"school":null,"pelosi":null,"campaign":null};
+var topWords= {"trump":null,"goverment shutdown":null,"muller investigation":null,"travewar":null,"border":null,"immigration":null,"abortion":null,"supreme court":null,"police":null,"south china sea":null,"democrats":null,"republicans":null,"syria":null,"mexico":null,"senate":null,"white house":null,"california":null,"election":null,"africa":null,"education":null,"nancy pelosi":null,"campaign":null};
 
 $('#search').autocomplete({
     data:topWords

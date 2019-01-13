@@ -306,7 +306,7 @@ def get_headlines(topic='government shutdown', threshold=0.02, page_size=10, sou
         right[i]['source'] = TransName[right[i]['source']['id']]
         right[i]['image'] = right[i]['urlToImage']
 
-    return [{"left":left[0:3], "right":right[0:3]}]
+    return {"left":left[0:3], "right":right[0:3]}
 
 
 def get_dict(series):

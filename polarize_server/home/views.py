@@ -9,20 +9,24 @@ from django.urls import reverse
 from home.testCard import *
 from home.models import *
 from home.algorithms import *
-
-topWords= ["trump","president","government","shutdown","border","donald","christmas","washington","police","national","democrats","republicans","syria","security","senate","china","california","election","war","school","pelosi","campaign"]
+from random import *
+topWords= ["donald trump","goverment shutdown","muller investigation","travewar","border","immigration","abortion","supreme court","police","south china sea","democrats","republicans","syria","mexico","senate","white house","california","election","africa","education","nancy pelosi","campaign"]
 
 class HomeView(TemplateView): #some from 48
     template_name = 'home/index.html'
     def get(self, request):
-        keyword="headlines"
+        firstChoices=sample(range(0,len(topWords)-1 ), 3)
+
         # queryset = CardRackCache.objects.filter(keyword=keyword).order_by('-timestamp')
         # if(queryset): # if there's a recent copy avail, grab that
         #     context = {'context':queryset[0]['jsonStr']}
-        realContext =  get_headlines('russian investigation', page_size=100, sources=relevant_sources_str)
-        realContext.append(get_headlines('government shutdown', page_size=100, sources=relevant_sources_str))
-        print(type(realContext))
-        context = {'context':realContext} # delete dummy when there's real stuff
+        realContext1=get_headlines(topWords[firstChoices[0]], page_size=100, sources=relevant_sources_str)
+        realContext2=get_headlines(topWords[firstChoices[1]], page_size=100, sources=relevant_sources_str)
+        realContext3=get_headlines(topWords[firstChoices[2]], page_size=100, sources=relevant_sources_str)
+
+        #realContext.append(get_headlines('government shutdown', page_size=100, sources=relevant_sources_str))
+        #print(type(realContext))
+        context = {'context':[realContext1,realContext2,realContext3]} # delete dummy when there's real stuff
         return render(request, self.template_name,context)
     def post(self, request):
         return render(request, self.template_name,context)
