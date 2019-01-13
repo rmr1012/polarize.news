@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import re
+import os
 import numpy as np
 import pandas as pd
 import pprint
@@ -32,8 +33,8 @@ def get_binary_bias(inStr, model, vocab):
     X1 = cv1.transform([inStr])
     return model.predict(X1) * 2 - 1
 
-
-(model, vocab) = loadModel('model.pk')
+realpath = os.path.dirname(__file__)
+(model, vocab) = loadModel(os.path.join(realpath,'model.pk'))
 
 
 def get_fuzzy_bias(bias, article):
