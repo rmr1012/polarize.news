@@ -270,7 +270,7 @@ def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
   # choose 3 dissimilar articles
 
     for (idx, rarticle) in enumerate(related_articles):
-        related_articles[idx]['hash'] = hash(rarticle['title'])
+        related_articles[idx]['hash'] = str(hash(rarticle['title']))
 
         inStr = clean(stack(related_articles[idx]['title'],
                       related_articles[idx]['description'],
