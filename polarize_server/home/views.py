@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden , HttpResponse
 from django.urls import reverse
 from home.testCard import *
 from home.models import *
@@ -63,3 +63,10 @@ def SearchAPI(request):
     else:
         print("hehe")
         return render(request, 'home/index.html')
+
+@api_view(['GET','POST'])
+@csrf_exempt
+def FetchAPI(request):
+    if request.method == 'GET':
+        print(request.GET)
+    return HttpResponse('')

@@ -1,0 +1,7 @@
+<div class="col s6">
+  {% include 'home/news_card.html' with articles=context.0.left %}
+</div>
+<div class="col s6">
+  {% include 'home/news_card.html' with articles=context.0.right %}
+</div>
+<script> $('.tabs').tabs();     $('.lazy').Lazy();</script>
