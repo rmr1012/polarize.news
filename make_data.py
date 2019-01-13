@@ -117,6 +117,33 @@ def trainModel():
 
     final_model = LogisticRegression(C=0.5)
     final_model.fit(X, intTruth)
+    return final_model ,cv, vocab
+def get_top_n_words(corpus, n=None):
+    """
+    List the top n words in a vocabulary according to occurrence in a text corpus.
+
+    get_top_n_words(["I love Python", "Python is a language programming", "Hello world", "I love the world"]) ->
+    [('python', 2),
+     ('world', 2),
+     ('love', 2),
+     ('hello', 1),
+     ('is', 1),
+     ('programming', 1),
+     ('the', 1),
+     ('language', 1)]
+    """
+    vec = CountVectorizer().fit(corpus)
+    bag_of_words = vec.transform(corpus)
+    sum_words = bag_of_words.sum(axis=0)
+    words_freq = [(word, sum_words[0, idx]) for word, idx in     vec.vocabulary_.items()]
+    words_freq =sorted(words_freq, key = lambda x: x[1], reverse=True)
+    return words_freq[:n]
+
+articles=json.load(open("articles.json","r"))
+cars_for_sell = articles
+common_words = get_top_n_words(cars_for_sell, 20)
+for word, freq in common_words:
+    print(word, freq)
 
 def loadModel(path):
     data = pickle.load(open(path,"rb"))
@@ -127,6 +154,27 @@ def predictBias(inStr, model, vocab):
     cv1.fit([cleanStr])
     X1 = cv1.transform([cleanStr])
     return model.predict(X1)
+def get_fuzzy_bias(bias, article):
+  text = article['title'] + ' ' + article['description']
+  content = article['content']
+
+  if content is not None:
+      text += ' ' + content
+
+  p = re.compile(r"(\b[-']\b)|[\W_]")
+  text_to_analyze = p.sub(lambda m: (m.group(1) if m.group(1) else " "), text)
+
+  tagged = pos_tag(text_to_analyze.split())
+
+  noun_tags = ['NN', 'NNS', 'NNP', 'NNPS']
+  adj_tags = ['JJ', 'JJR', 'JJS']
+
+  nouns = list(set([word.lower() for word,pos in tagged if pos in noun_tags]))
+  adj = list(set([word.lower() for word,pos in tagged if pos in adj_tags]))
+
+  fuzzy = len(adj)/len(nouns)
+
+  return bias*fuzzy
 
 def extreames():
     feature_to_coef = {word: coef for word, coef in zip(vocab, model.coef_[0])}

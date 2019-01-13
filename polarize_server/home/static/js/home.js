@@ -1,5 +1,9 @@
 
+var topWords= {"trump":null,"president":null,"government":null,"shutdown":null,"border":null,"donald":null,"christmas":null,"washington":null,"police":null,"national":null,"democrats":null,"republicans":null,"syria":null,"security":null,"senate":null,"china":null,"california":null,"election":null,"war":null,"school":null,"pelosi":null,"campaign":null};
 
+$('#search').autocomplete({
+    data:topWords
+  });
 
 var stuck=false;
 $(".small-title").hide();
@@ -9,6 +13,7 @@ $(window).scroll(animate_stick);
 $(document).ready(function(){
     $('.tabs').tabs(); // { swipeable: true }
     $('.lazy').Lazy();
+
   });
 globalLoadCount=0
 articleQuery="headlines"
@@ -28,10 +33,10 @@ function makePlaceholder(){
 (function($) {
        $.Lazy('newsLoader', function(element, response) {
            // just for demonstration, write some text inside element
-           element.find(".libral h4").html('lib successfully loaded div#' + element.attr('id'))
-                  .addClass("loaded");
-           element.find(".conservative h4").html('lib successfully loaded div#' + element.attr('id'))
-                 .addClass("loaded");
+           // element.find(".libral h4").html('lib successfully loaded div#' + element.attr('id'))
+           //        .addClass("loaded");
+           // element.find(".conservative h4").html('lib successfully loaded div#' + element.attr('id'))
+           //       .addClass("loaded");
           console.log('lib successfully loaded div#' + element.attr('id'))
           globalLoadCount+=1;
 
@@ -39,11 +44,11 @@ function makePlaceholder(){
           $.ajax({
                   type: "POST",
                   url: "load",//other option is search
-                  contentType: "application/json",
                   dataType: "json",
-                  data : {'boo':'poo  '},
+                  data : { "topic":articleQuery, "index":globalLoadCount},
                   success: function(response) {
                       console.log(response);
+                      element.html(response.card)
                   },
                   error: function(response) {
                       console.log(response);
