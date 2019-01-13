@@ -29,6 +29,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <link href="{% static "css/home.css" %}" rel="stylesheet">
+
+  <style>
+  #topic {
+    color: whitesmoke;
+    font-weight: bold;
+    font-size: 1.4em;
+    background-color: rgba(0, 0, 0, 0.6);
+    text-align: center;
+    padding: 0.5em;
+    border-radius: 0.1em;
+  }
+  </style>
 </head>
 
 <body>
@@ -41,7 +53,7 @@
       <div id="title" class="col s12"><img style="width:65%" src="static/img/polarized-logo.png"></div>
   </div>
   <div class="row" style="text-align:center">
-    <h2 style="color:whitesmoke">Read the best of both sides</h2>
+    <h2 style="color:whitesmoke">Get the full story.</h2>
   </div>
   <div class="container fixed-head row">
     <nav class="col s12 smooth" id="search-bar">
@@ -58,7 +70,11 @@
     <div class="col s4 small-title smooth" ><img style="width:65%"src="static/img/polarized-logo.png"></div>
   </div>
   <div class="container card-rack">
-    <div class="row">{{ topic.0 }}</div>
+    <div class="row lazy">
+        <div class="col s4"></div>
+        <div class="col s4" id="topic">RUSSIAN INVESTIGATION</div>
+        <div class="col s4"></div>
+    </div>
     <div class="row">
         <div class="col s6">
           {% include 'home/news_card.html' with articles=context.0.left %}
@@ -84,7 +100,8 @@
         <div class="col s6">
           {% include 'home/news_card.html' with articles=context.2.right %}
         </div>
-    </div>
+    </div> 
+
     <div class="row lazy" id="box-0" data-loader="newsLoader">
         <div class="col s6 libral" style="text-align: center;">
           <img src="static/img/loader.svg">
