@@ -10,7 +10,7 @@ from home.testCard import *
 from home.models import *
 from home.algorithms import *
 from random import *
-topWords= ["donald trump","goverment shutdown","muller investigation","travewar","border","immigration","abortion","supreme court","police","south china sea","democrats","republicans","syria","mexico","senate","white house","california","election","africa","education","nancy pelosi","campaign"]
+topWords= ["donald trump","goverment shutdown","muller investigation","travel","border","immigration","abortion","supreme court","police","south china sea","democrats","republicans","syria","mexico","senate","white house","california","election","africa","education","nancy pelosi","campaign"]
 
 class HomeView(TemplateView): #some from 48
     template_name = 'home/index.html'
@@ -26,7 +26,7 @@ class HomeView(TemplateView): #some from 48
 
         #realContext.append(get_headlines('government shutdown', page_size=100, sources=relevant_sources_str))
         #print(type(realContext))
-        context = {'context':[realContext1,realContext2,realContext3]} # delete dummy when there's real stuff
+        context = {'context':[realContext1,realContext2,realContext3],'topic':[topWords[firstChoices[0]],topWords[firstChoices[1]],topWords[firstChoices[2]]]} # delete dummy when there's real stuff
         return render(request, self.template_name,context)
     def post(self, request):
         return render(request, self.template_name,context)
