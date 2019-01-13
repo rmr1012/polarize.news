@@ -323,7 +323,7 @@ def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
 
 def get_dict(series):
     d = {
-        'source': series['source'],
+        'source': series['source']['name'],
         'title': series['title'],
         'image': series['urlToImage'],
         'description': series['description'],
