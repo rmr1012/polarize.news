@@ -19,10 +19,9 @@ class HomeView(TemplateView): #some from 48
         # queryset = CardRackCache.objects.filter(keyword=keyword).order_by('-timestamp')
         # if(queryset): # if there's a recent copy avail, grab that
         #     context = {'context':queryset[0]['jsonStr']}
-        realContext =  get_headlines(page_size=100, sources=relevant_sources_str)
-
-        print(realContext)
-        print(dummyContext)
+        realContext =  get_headlines('russian investigation', page_size=100, sources=relevant_sources_str)
+        realContext.append(get_headlines('government shutdown', page_size=100, sources=relevant_sources_str))
+        print(type(realContext))
         context = {'context':realContext} # delete dummy when there's real stuff
         return render(request, self.template_name,context)
     def post(self, request):

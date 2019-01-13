@@ -65,7 +65,7 @@ TransName = {
     'the-american-conservative':'American-Cons',
     'the-hill':'The Hill',
     'the-huffington-post':'HuffPost',
-    'the-new-york-times':'NY Times',
+    'the-new-york-times':'NY-Times',
     'the-washington-post':'WashPost',
     'the-washington-times':'WashTimes',
     'time':'Time',
@@ -254,11 +254,13 @@ def get_headlines(topic='government shutdown', threshold=0.02, page_size=10, sou
     # clean up some of the data
     for i in range(0,len(left)):
         left[i]['bias'] = np.abs(left[i]['bias'])
-        left[i]['source'] = left[i]['source']['name']
+        left[i]['source'] = TransName[left[i]['source']['id']]
+        left[i]['image'] = left[i]['urlToImage']
 
     for i in range(0,len(right)):
         right[i]['bias'] = np.abs(right[i]['bias']) 
-        right[i]['source'] = right[i]['source']['name']
+        right[i]['source'] = TransName[right[i]['source']['id']]
+        right[i]['image'] = right[i]['urlToImage']
 
     return [{"left":left[0:3], "right":right[0:3]}]
 
