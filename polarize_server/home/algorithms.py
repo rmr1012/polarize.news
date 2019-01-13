@@ -17,6 +17,35 @@ from sklearn.feature_extraction.text import CountVectorizer
 
 newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
 
+relevant_sources = [
+    'abc-news',
+    'al-jazeera-english',
+    'associated-press',
+    'axios',
+    'cbs-news',
+    'cnn',
+    'fox-news',
+    'google-news',
+    'msnbc',
+    'national-review',
+    'nbc-news',
+    'newsweek',
+    'new-york-magazine',
+    'politico',
+    'reuters',
+    'the-american-conservative',
+    'the-hill',
+    'the-huffington-post',
+    'the-new-york-times',
+    'the-washington-post',
+    'the-washington-times',
+    'time',
+    'usa-today',
+    'vice-news',
+    ]
+
+relevant_sources_str = ','.join(relevant_sources)
+
 
 def loadModel(path):
     data = pickle.load(open(path, 'rb'))
@@ -32,8 +61,8 @@ def get_binary_bias(inStr, model, vocab):
     X1 = cv1.transform([inStr])
     return model.predict(X1) * 2 - 1
 
-
-(model, vocab) = loadModel('home/model.pk')
+realpath = os.path.dirname(__file__)
+(model, vocab) = loadModel(os.path.join(realpath,'model.pk'))
 
 
 def get_fuzzy_bias(bias, article):
@@ -77,17 +106,20 @@ def get_fuzzy_bias(bias, article):
 
 
 def get_keywords(article, remove_duplicates=True, nouns_only=False):
-    text = article['title'] + ' ' + article['description']
-    content = article['content']
+    # text = article['title'] + ' ' + article['description']
+    # content = article['content']
 
-    if content is not None:
-        text += ' ' + content
+    # if content is not None:
+    #     text += ' ' + content
 
-    p = re.compile(r"(\b[-']\b)|[\W_]")
-    text_to_analyze = p.sub(lambda m: (m.group(1) if m.group(1) else ' '
-                            ), text)
+    # p = re.compile(r"(\b[-']\b)|[\W_]")
+    # text_to_analyze = p.sub(lambda m: (m.group(1) if m.group(1) else ' '
+    #                         ), text)
 
-    tagged = pos_tag(text_to_analyze.split())
+    stacked = stack(article['title'], article['description'], article['content'])
+    cleaned = clean(stacked)
+
+    tagged = pos_tag(cleaned.split())
 
     if remove_duplicates:
         keywords = list(set([word.lower() for (word, pos) in tagged
@@ -97,8 +129,9 @@ def get_keywords(article, remove_duplicates=True, nouns_only=False):
         keywords = list([word.lower() for (word, pos) in tagged if pos
                         == 'NNP' or pos == 'VBG' or pos == 'VBD'])
     elif remove_duplicates == False and nouns_only:
-        keywords = list([word.lower() for (word, pos) in tagged if pos
-                        == 'NNP'])
+        noun_tags = ['NN', 'NNS', 'NNP', 'NNPS']
+
+        keywords = list([word.lower() for (word, pos) in tagged if pos in noun_tags])
 
     return keywords
 
@@ -199,7 +232,7 @@ def get_most_common_keywords(articles, n):
     return df[0:n]
 
 
-def get_headlines(threshold=0.1, page_size=10, sources=None):
+def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
     """Called every thirty minutes."""
 
     newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
@@ -217,11 +250,13 @@ def get_headlines(threshold=0.1, page_size=10, sources=None):
   # get related articles
 
     first_article = articles[1]
-    most_common_kw = get_most_common_keywords([first_article],
-            1).keys()[0]
+    most_common_kws = ','.join(list(get_most_common_keywords([first_article],
+            5).keys()))
 
     related_articles = newsapi.get_everything(language='en',
-            q=most_common_kw, page_size=page_size)['articles']
+                                              q=most_common_kws[0],
+                                              sort_by='relevancy',
+                                              page_size=page_size)['articles']
 
     for (idx, rarticle) in enumerate(related_articles):
         if rarticle['title'] is None or rarticle['description'] is None \
