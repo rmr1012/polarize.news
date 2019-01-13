@@ -47,6 +47,33 @@ relevant_sources = [
 
 relevant_sources_str = ','.join(relevant_sources)
 
+TransName = {
+    'abc-news’:’ABC’,
+    'al-jazeera-english':’ABC’,
+    'associated-press':’Associated,
+    'axios':’Axios’,
+    'cbs-news’:’CBS’,
+    'cnn’:’CNN’,
+    'fox-news:’FOX’,
+    'google-news’:’Google’,
+    'msnbc’:’MSNBC’,
+    'national-review’:’National’,
+    'nbc-news’:’NBC’,
+    'newsweek’:’NewsWeek’,
+    'new-york-magazine’:’NY-Mag,
+    'politico’:’Politico’,
+    'reuters’:’Reuters’,
+    'the-american-conservative’:’American-Cons’,
+    'the-hill’:’The Hill’,
+    'the-huffington-post’:’HuffPost’,
+    'the-new-york-times’:’NY Times’,
+    'the-washington-post’:’WashPost’,
+    'the-washington-times’:’WashTimes’,
+    'time’:’Time’,
+    'usa-today’:’USA-Today’,
+    'vice-news’:Vice,
+}
+
 
 def loadModel(path):
     data = pickle.load(open(path, 'rb'))
@@ -259,7 +286,7 @@ def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
     first_article['bias'] = \
         get_fuzzy_bias(get_binary_bias(inStr, model, vocab),
                         first_article)
-    first_article['source'] = first_article['source']['name']
+    first_article['source'] = TransName[first_article['source']['name']]
 
     most_common_kws = ','.join(list(get_most_common_keywords([first_article],
             5).keys()))
@@ -332,7 +359,7 @@ def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
 
 def get_dict(series):
     d = {
-        'source': series['source']['name'],
+        'source': TransName[series['source']['name']],
         'title': series['title'],
         'image': series['urlToImage'],
         'description': series['description'],
