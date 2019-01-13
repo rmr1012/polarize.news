@@ -1,3 +1,89 @@
-.test{
-  background-color: black;
+#search-bar{
+  background-color: rgb(235,235,235);
+}
+nav .input-field label.active i {
+  color:rgb(128,128,128)
+
+}
+nav .input-field label i {
+  color:rgb(128,128,128)
+}
+.bias-meter .badge{
+  color:white;
+}
+.small-title{
+  text-align: center;
+}
+.fixed-head{
+  position: sticky;
+  top: 0;
+  padding-top: 25px;
+  margin-top: -25px;
+  z-index: 1;
+}
+.card-rack{
+  margin-top: 100px;
+}
+.smooth{
+  transition: all 0.5s;
+}
+.backplane{
+  position: fixed;
+  top:0;
+  left:0;
+  height:100vh;
+  width: 100vw;
+  z-index: -1;
+}
+.backplane .left{
+  float:left;
+  width: 50%;
+  height: 100%;
+  background-color: rgb(107,107,255)
+}
+.backplane .right{
+  float:right;
+  width: 50%;
+  height: 100%;
+  background-color: rgb(255,107,107)
+}
+
+body {
+    background-color: whitesmoke;
+    font-family: "Roboto";
+}
+
+#title {
+    text-align: center;
+}
+
+
+.polarized_card {
+    background-color: whitesmoke;
+    margin: 1em;
+    padding: 1em;
+}
+
+.polarized_image {
+    margin: auto;
+    max-width: 50%;
+}
+
+.polarized_source {
+    text-align: center;
+    color: black;
+    font-size: 1em;
+}
+
+.polarized_title {
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: black;
+    padding: 1em;
+    padding-top:.5em;
+}
+
+.polarized_content {
+    color: darkslategrey;
 }

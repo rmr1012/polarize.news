@@ -1,0 +1,44 @@
+{% load multiply %}
+{% load tohslh %}
+<div class="polarized_card card">
+  {% if articles %}
+    <ul id="tabs-swipe-demo" class="tabs">
+    {% for article in articles %}
+      <li class="tab col s3"><a href="#{{ article.hash }}-{{ article.source }}">{{ article.source }}</a></li>
+    {% endfor %}
+    </ul>
+    {% for article in articles %}
+
+    <div id="{{ article.hash }}-{{ article.source }}">
+      <div class="container bias-meter" style="width:90%">
+
+        <div class="row" style="margin-bottom:0 ;margin-top:20px">
+          <span>Bias'O Meter</span>
+          <span class="badge" style="background-color: hsla({{ article.bias|tohslh }}, 100%, 30%, 1)">{{ article.bias|mapbias }}: {{ article.bias|multiplystr:10 }}</span>
+        </div>
+        <div class="row" style="margin-bottom:0">
+          <div class="progress">
+              <div class="determinate" style="width: {{ article.bias|multiply:100 }}%"></div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="polarized_title">
+        <span>{{ article.title }}</span>
+      </div>
+      <div class="card-image">
+          <img src="{{ article.image }}">
+      </div>
+      <div class="polarized_content card-content">
+          <span>{{ article.description }}</span>
+      </div>
+      <div class="card-action">
+          <a href="{{ article.url }}">View this on {{ article.source }}</a>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p>No Simalar Content</p>
+  {% endif %}
+</div>
