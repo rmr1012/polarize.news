@@ -7,7 +7,10 @@ import pandas as pd
 import pprint
 import nltk
 from nltk.tag import pos_tag
+from nltk.corpus import stopwords
+nltk.download('stopwords')
 nltk.download('averaged_perceptron_tagger')
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 from newsapi import NewsApiClient
 
@@ -66,7 +69,7 @@ TransName = {
     'the-american-conservative':'American-Cons',
     'the-hill':'The Hill',
     'the-huffington-post':'HuffPost',
-    'the-new-york-times':'NY Times',
+    'the-new-york-times':'NY-Times',
     'the-washington-post':'WashPost',
     'the-washington-times':'WashTimes',
     'time':'Time',
@@ -92,6 +95,44 @@ def get_binary_bias(inStr, model, vocab):
 realpath = os.path.dirname(__file__)
 (model, vocab) = loadModel(os.path.join(realpath,'model.pk'))
 
+def get_abs_fuzzy_bias(article):
+    """Calculates a fuzzy bias value from a binary bias value and the article
+    keywords.
+
+    Parameters
+    ----------
+    bias : int (-1,1)
+    article : dict
+
+    Returns
+    -------
+    fuzzy_bias : float, typically between -1 and 1
+    note: can exceed mag(1) if instances of adj > nouns
+    """
+
+    text = article['title'] + ' ' + article['description']
+    content = article['content']
+
+    if content is not None:
+        text += ' ' + content
+
+    p = re.compile(r"(\b[-']\b)|[\W_]")
+    text_to_analyze = p.sub(lambda m: (m.group(1) if m.group(1) else ' '
+                            ), text)
+
+    tagged = pos_tag(text_to_analyze.split())
+
+    noun_tags = ['NN', 'NNS', 'NNP', 'NNPS']
+    adj_tags = ['JJ', 'JJR', 'JJS']
+
+    nouns = list(set([word.lower() for (word, pos) in tagged if pos
+                 in noun_tags]))
+    adj = list(set([word.lower() for (word, pos) in tagged if pos
+               in adj_tags]))
+
+    fuzzy = len(adj) / len(nouns)
+
+    return fuzzy
 
 def get_fuzzy_bias(bias, article):
     """Calculates a fuzzy bias value from a binary bias value and the article
@@ -222,7 +263,11 @@ def clean(inStr):
                    )
     NO_SPACE = ''
     SPACE = ' '
-    return REPLACE_NO_SPACE.sub(NO_SPACE, inStr.lower())
+    txt=REPLACE_NO_SPACE.sub(NO_SPACE, inStr.lower())
+    s=set(stopwords.words('english'))
+    return ' '.join(list(filter(lambda w: not w in s,txt.split())))
+
+
 
 
 def get_most_common_keywords(articles, n):
@@ -260,101 +305,87 @@ def get_most_common_keywords(articles, n):
     return df[0:n]
 
 
-def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
+def get_headlines(threshold=0.12, page_size=10, sources=relevant_sources_str,topic='white house'):
     """Called every thirty minutes."""
-
     newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
     if sources == None:
-        headlines = newsapi.get_top_headlines(language='en',
-                country='us', page_size=10)
+        headlines = newsapi.get_everything(language='en', q=topic,
+        country='us', page_size=page_size)
     else:
-        headlines = newsapi.get_top_headlines(language='en',
-                sources=sources, page_size=10)
+        headlines = newsapi.get_everything(language='en', q=topic,
+        sources=sources, page_size=page_size)
     articles = headlines['articles']
+    completeArticles=[]
     for (idx, article) in enumerate(articles):
-        if article['title'] is None or article['description'] is None:
-            del articles[idx]
-
+        if article['title'] is not None and article['description'] is not None and article['content'] is not None:
+            print("adding"+str(idx))
+            completeArticles.append(article)
   # get related articles
+    #print(articles)
+    cleanArticles=[]
+    s=set(stopwords.words('english'))
+    for index,article in enumerate(completeArticles):
+        #print("clenaing"+str(index))
+        cleanArticles.append(clean(stack(article['title'],article['description'],article['content'])))
 
-    first_article = articles[1]
+    #print(cleanArticles)
+    cleanArticleBias=batchPredict(cleanArticles,model,vocab)
 
-    inStr = clean(stack(first_article['title'],
-                    first_article['description'],
-                    first_article['content']))
+    print(cleanArticleBias)
 
-    first_article['bias'] = \
-        get_fuzzy_bias(get_binary_bias(inStr, model, vocab),
-                        first_article)
-    first_article['source'] = TransName[first_article['source']['id']]
 
-    most_common_kws = ','.join(list(get_most_common_keywords([first_article],
-            5).keys()))
+    vect = TfidfVectorizer(min_df=1)
+    print("tic")
+    tfidf = vect.fit_transform(cleanArticles)
+    print("toc")
+    corr=(tfidf * tfidf.T).A
+    #print(corr)
+    avalStatus=[1]*len(cleanArticles)
+    clusters=[]
+    for count,articleCorr in enumerate(corr):
+        if(avalStatus[count]):
+            avalStatus[count]=0
+            idxs=sorted(range(len(articleCorr)), key=lambda i: articleCorr[i])[::-1][1:]
+            idxAboveThresh=[count]
+            for idx in idxs:
+                if(articleCorr[idx]>=threshold):
+                    if avalStatus[idx]:
+                        idxAboveThresh.append(idx)
+                        avalStatus[idx]=0
+            print(idxAboveThresh)
+            if(len(idxAboveThresh)>2): ## more than just itself
+                clusters.append(idxAboveThresh)
+            elif(len(idxAboveThresh)==2 and cleanArticleBias[count] != cleanArticleBias[idxAboveThresh[0]]):
+                clusters.append(idxAboveThresh)
 
-    related_articles = newsapi.get_everything(language='en',
-                                              q='politics',
-                                              page_size=page_size)['articles']
+    #print(avalStatus)
+    #print("^ shoulld be all 0")
+    print(clusters)
 
-    for (idx, rarticle) in enumerate(related_articles):
-        if rarticle['title'] is None or rarticle['description'] is None \
-            or rarticle['content'] is None:
-            del related_articles[idx]
+    cardRack=[]
 
-    kw0 = get_keywords(first_article)
-    corr = fast_sim(kw0, first_article)
+    for cluster in clusters:
+        leftArray=[]
+        rightArray=[]
+        for idx in cluster:
+            article=completeArticles[idx]
+            article["source"]=TransName[article["source"]["id"]]
+            article["bias"]=get_abs_fuzzy_bias(completeArticles[idx])
+            article["hash"]=str(hash(cleanArticles[idx]))
+            article["image"]=article["urlToImage"]
+            if cleanArticleBias[idx]: # if conservative
+                rightArray.append(article)
+            else:
+                leftArray.append(article)
+        cardRack.append({"left":leftArray,"right":rightArray})
 
-  # choose 3 dissimilar articles
+    return cardRack
 
-    for (idx, rarticle) in enumerate(related_articles):
-        related_articles[idx]['hash'] = str(hash(rarticle['title']))
-
-        inStr = clean(stack(related_articles[idx]['title'],
-                      related_articles[idx]['description'],
-                      related_articles[idx]['content']))
-
-        related_articles[idx]['bias'] = \
-            get_fuzzy_bias(get_binary_bias(inStr, model, vocab),
-                           related_articles[idx])
-
-      # only for the first article
-
-        related_articles[idx]['score'] = fast_sim(kw0, article) / corr
-
-  # combine dictionary and create dataframe for easier processing
-
-    rarticles_combined = {}
-    for k in related_articles[0].keys():
-        rarticles_combined[k] = tuple(a[k] for a in related_articles)
-
-    df = pd.DataFrame.from_dict(rarticles_combined)
-    df = df.sort_values('score', ascending=False).reset_index()
-
-    left0 = []  # first content
-    right0 = []  #
-    inStr = clean(stack(first_article['title'],
-                  first_article['description'], first_article['content'
-                  ]))
-    if get_fuzzy_bias(get_binary_bias(inStr, model, vocab),
-                      first_article) < 0:
-        left0.append(first_article)
-    else:
-        right0.append(first_article)
-
-    hashes_used = []
-
-    for i in range(0, len(df['score'])):
-        if df['score'][i] > threshold and len(right0) <= 3 \
-            and len(left0) <= 3:
-            if df['bias'][i] < 0 and len(left0) < 3:
-                left0.append(get_dict(df.iloc[i]))
-                hashes_used.append(df.iloc[i]['hash'])
-            elif df['bias'][i] > 0 and len(right0) < 3:
-                right0.append(get_dict(df.iloc[i]))
-                hashes_used.append(df.iloc[i]['hash'])
-        else:
-            break
-
-    return [{"left":left0, "right":right0}]
+def batchPredict(mat, model, vocab):
+    cv1 = CountVectorizer(binary=True,vocabulary=vocab)
+    cv1.fit(mat)
+    X1 = cv1.transform(mat)
+    return model.predict(X1)
 
 
 def get_dict(series):
