@@ -10,7 +10,7 @@ from home.testCard import *
 from home.models import *
 from home.algorithms import *
 from random import *
-topWords= ["donald trump","goverment shutdown","muller investigation","travel","border","immigration","abortion","supreme court","police","south china sea","democrats","republicans","syria","mexico","senate","white house","california","election","africa","education","nancy pelosi","campaign"]
+topWords= ["donald trump","goverment shutdown","muller investigation","border","immigration","abortion","supreme court","police","south china sea","democrats","republicans","syria","mexico","senate","white house","california","election","africa","education","nancy pelosi","campaign"]
 
 class HomeView(TemplateView): #some from 48
     template_name = 'home/index.html'

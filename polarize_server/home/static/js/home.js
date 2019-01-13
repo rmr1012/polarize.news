@@ -60,6 +60,10 @@ articleQuery="headlines"
 
 
 function insertNewCard(inquery){
+          $(".pre-spin-loader").show()
+          $([document.documentElement, document.body]).animate({
+                scrollTop: $(".pre-spin-loader").offset().top-100
+            }, 1000);
           $.ajax({
                   type: "POST",
                   url: "search",//other option is search
@@ -69,12 +73,12 @@ function insertNewCard(inquery){
                       console.log(response);
                       $(".card-rack").prepend(response.card)
                       topicList.push(response.topic);
-                      loading=false;
-                      $(".spin-loader").css("opacity",0)
+                      $(".pre-spin-loader").hide()
                       setTimeout(function(){
                         $([document.documentElement, document.body]).animate({
                               scrollTop: $("#topic-"+inquery.replace(/\s+/g, '-').toLowerCase()).offset().top-100
                           }, 1000);
+
                       },300)
                   },
                   error: function(response) {
