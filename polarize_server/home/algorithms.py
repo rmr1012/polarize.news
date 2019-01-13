@@ -103,7 +103,7 @@ def get_fuzzy_bias(bias, article):
 
     fuzzy = len(adj) / len(nouns)
 
-    return bias * fuzzy
+    return fuzzy
 
 
 def get_keywords(article, remove_duplicates=True, nouns_only=False):
