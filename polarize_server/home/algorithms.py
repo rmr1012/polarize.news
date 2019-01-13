@@ -69,12 +69,12 @@ realpath = os.path.dirname(__file__)
 def get_fuzzy_bias(bias, article):
     """Calculates a fuzzy bias value from a binary bias value and the article
   keywords.
-  
+
   Parameters
   ----------
   bias : int (-1,1)
   article : dict
-  
+
   Returns
   -------
   fuzzy_bias : float, typically between -1 and 1
@@ -335,11 +335,45 @@ def get_dict(series):
     return d
 
 
+<<<<<<< HEAD
 def main():
     article = get_headlines(page_size=100, sources=relevant_sources_str)
+=======
+relevant_sources = [
+    'abc-news',
+    'al-jazeera-english',
+    'associated-press',
+    'axios',
+    'cbs-news',
+    'cnn',
+    'fox-news',
+    'google-news',
+    'msnbc',
+    'national-review',
+    'nbc-news',
+    'newsweek',
+    'new-york-magazine',
+    'politico',
+    'reuters',
+    'the-american-conservative',
+    'the-hill',
+    'the-huffington-post',
+    'the-new-york-times',
+    'the-washington-post',
+    'the-washington-times',
+    'time',
+    'usa-today',
+    'vice-news',
+    ]
+
+relevant_sources_str = ','.join(relevant_sources)
+
+def getHeadlineDict():
+    article = get_headlines(page_size=10, sources=relevant_sources_str)
+>>>>>>> e195f8a4309f348fee11a6073d5d9535fa8264da
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(article)
 
 
 if __name__ == '__main__':
-    main()
+    getHeadlineDict()

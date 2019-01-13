@@ -8,6 +8,7 @@ from django.http import HttpResponseForbidden , HttpResponse
 from django.urls import reverse
 from home.testCard import *
 from home.models import *
+from home.algorithms import *
 
 topWords= ["trump","president","government","shutdown","border","donald","christmas","washington","police","national","democrats","republicans","syria","security","senate","china","california","election","war","school","pelosi","campaign"]
 
@@ -15,9 +16,13 @@ class HomeView(TemplateView): #some from 48
     template_name = 'home/index.html'
     def get(self, request):
         keyword="headlines"
-        queryset = CardRackCache.objects.filter(keyword=keyword).order_by('-timestamp')
-        if(queryset): # if there's a recent copy avail, grab that
-            context = {'context':queryset[0]['jsonStr']}
+        # queryset = CardRackCache.objects.filter(keyword=keyword).order_by('-timestamp')
+        # if(queryset): # if there's a recent copy avail, grab that
+        #     context = {'context':queryset[0]['jsonStr']}
+        realContext =  get_headlines(page_size=10, sources=relevant_sources_str)
+
+        print(realContext)
+        print(dummyContext)
         context = {'context':dummyContext} # delete dummy when there's real stuff
         return render(request, self.template_name,context)
     def post(self, request):
