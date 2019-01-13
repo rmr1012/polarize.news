@@ -299,8 +299,7 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
         elif bias > 0 and hash_ not in hashes_used:
             right.append(article)
     
-        hashes_used =.append(hash_)
-
+        hashes_used.append(hash_)
 
     # clean up some of the data
     for i in range(0,len(left)):
