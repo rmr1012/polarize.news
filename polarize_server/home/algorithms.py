@@ -20,6 +20,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 # initialize connection to newsapi
 newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
 
+hashes_used = []
+
 relevant_sources = [
     'abc-news',
     'al-jazeera-english',
@@ -292,10 +294,13 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
         articles[idx]['bias'] = bias
         articles[idx]['hash'] = hash_
 
-        if bias < 0:
+        if bias < 0 and hash_ not in hashes_used:
             left.append(article)
-        elif bias > 0:
+        elif bias > 0 and hash_ not in hashes_used:
             right.append(article)
+    
+        hashes_used =.append(hash_)
+
 
     # clean up some of the data
     for i in range(0,len(left)):
