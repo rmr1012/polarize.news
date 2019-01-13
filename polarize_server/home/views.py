@@ -36,18 +36,28 @@ class HomeView(TemplateView): #some from 48
 def LoadAPI(request):
     #print(request.POST)
     if request.method == 'GET':
-        print("haha")
         return render(request, 'home/index.html')
     else: #POST
         #try:
         print("step1")
-        index=request.POST['index']
-        topic=request.POST['topic']
-        print(topic,index)
-        # hit DB here, but for now render dummy
-        context = {"context":[dummyContext[0]]}
-        print("step2")
+        #print(request.data)
+        topic=request.POST.get('topic[]')
 
+        #print(topic,index)
+        avalWords=[]
+        for word in topWords:
+            if word not in topic:
+                avalWords.append(word)
+
+        freeInd=sample(range(0,len(avalWords)-1 ), 1)[0]
+        print(avalWords)
+
+        keyword=avalWords[freeInd]
+        print(keyword)
+        realContext=get_headlines(keyword, page_size=100, sources=relevant_sources_str)
+
+        context = {"context":realContext,"topic":keyword}
+        print("step2")
         # return render(request, 'wizzard/wizzard.html',context)
         newCard = render_to_string('home/load_one_row.html', context)
         print("step3")

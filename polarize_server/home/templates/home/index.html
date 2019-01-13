@@ -69,10 +69,11 @@
     </nav>
     <div class="col s4 small-title smooth" ><img style="width:65%"src="static/img/polarized-logo.png"></div>
   </div>
+  <script> var topicList=["{{ topic.0 }}","{{ topic.1 }}","{{ topic.2 }}"]</script>
   <div class="container card-rack">
-    <div class="row lazy">
+    <div class="row ">
         <div class="col s4"></div>
-        <div class="col s4" id="topic">RUSSIAN INVESTIGATION</div>
+        <div class="col s4" id="topic">{{ topic.0 }}</div>
         <div class="col s4"></div>
     </div>
     <div class="row">
@@ -83,7 +84,11 @@
           {% include 'home/news_card.html' with articles=context.0.right %}
         </div>
     </div>
-    <div class="row">{{ topic.1 }}</div>
+    <div class="row ">
+        <div class="col s4"></div>
+        <div class="col s4" id="topic">{{ topic.1 }}</div>
+        <div class="col s4"></div>
+    </div>
     <div class="row">
         <div class="col s6">
           {% include 'home/news_card.html' with articles=context.1.left %}
@@ -92,7 +97,11 @@
           {% include 'home/news_card.html' with articles=context.1.right %}
         </div>
     </div>
-    <div class="row">{{ topic.2 }}</div>
+    <div class="row ">
+        <div class="col s4"></div>
+        <div class="col s4" id="topic">{{ topic.2 }}</div>
+        <div class="col s4"></div>
+    </div>
     <div class="row">
         <div class="col s6">
           {% include 'home/news_card.html' with articles=context.2.left %}
@@ -100,17 +109,11 @@
         <div class="col s6">
           {% include 'home/news_card.html' with articles=context.2.right %}
         </div>
-    </div> 
-
-    <div class="row lazy" id="box-0" data-loader="newsLoader">
-        <div class="col s6 libral" style="text-align: center;">
-          <img src="static/img/loader.svg">
-        </div>
-        <div class="col s6 conservative" style="text-align: center;">
-          <img src="static/img/loader.svg">
-        </div>
     </div>
 
+  </div>
+  <div class="row spin-loader" style="text-align:center">
+      <img src="static/img/loader.svg">
   </div>
 
 

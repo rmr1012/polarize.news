@@ -23,7 +23,10 @@ import random
 import nltk
 from nltk.tag import pos_tag
 nltk.download('averaged_perceptron_tagger')
-
+REPLACE_NO_SPACE = \
+    re.compile('(\xe2\x80\xa6)|(\\[+.* chars\\])|(\r)|(\n)|(\\.)|(\\;)|(\\:)|(\\!)|(\')|(\\?)|(\\,)|(")|(\\()|(\\))|(\\[)|(\\])|(\\d+)')
+NO_SPACE = ''
+SPACE = ' '
 newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
 classifiers = [
     #svm.SVR(),
@@ -81,7 +84,8 @@ def predictBias(inStr, model, vocab):
     cleanStr=REPLACE_NO_SPACE.sub(NO_SPACE, inStr.lower())
     cv1.fit([cleanStr])
     X1 = cv1.transform([cleanStr])
-    return model.predict(X1)
+    return model.predict_proba(X1)
+
 def batchPredict(mat, model, vocab):
     cv1 = CountVectorizer(binary=True,vocabulary=vocab)
     cv1.fit(mat)
@@ -106,10 +110,7 @@ def getRandFromSource(source):
 def stack(title,desc,content):
     return content+desc*2+title*3
 def clean(inStr):
-    REPLACE_NO_SPACE = \
-        re.compile('(\xe2\x80\xa6)|(\\[+.* chars\\])|(\r)|(\n)|(\\.)|(\\;)|(\\:)|(\\!)|(\')|(\\?)|(\\,)|(")|(\\()|(\\))|(\\[)|(\\])|(\\d+)')
-    NO_SPACE = ''
-    SPACE = ' '
+
     txt=REPLACE_NO_SPACE.sub(NO_SPACE, inStr.lower())
     s=set(stopwords.words('english'))
     return ' '.join(list(filter(lambda w: not w in s,txt.split())))

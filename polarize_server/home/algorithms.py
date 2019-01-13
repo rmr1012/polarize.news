@@ -302,13 +302,13 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
         left[i]['bias'] = np.abs(left[i]['bias'])
         left[i]['source'] = TransName[left[i]['source']['id']]
         left[i]['image'] = left[i]['urlToImage']
-        left[i]['hash'] = str(hash(left[i]["title"]))
+        left[i]['hash'] = str(hash(left[i]["title"]))[:-6]
 
     for i in range(0,len(right)):
         right[i]['bias'] = np.abs(right[i]['bias'])
         right[i]['source'] = TransName[right[i]['source']['id']]
         right[i]['image'] = right[i]['urlToImage']
-        right[i]['hash'] = str(hash(left[i]["title"]))
+        right[i]['hash'] = str(hash(right[i]["title"]))[:-6]
 
     return {"left":left[0:3], "right":right[0:3]}
 

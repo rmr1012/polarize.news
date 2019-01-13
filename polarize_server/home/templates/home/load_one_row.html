@@ -1,7 +1,14 @@
+<div class="row ">
+    <div class="col s4"></div>
+    <div class="col s4" id="topic">{{ topic }}</div>
+    <div class="col s4"></div>
+</div>
+<div class="row ">
 <div class="col s6">
-  {% include 'home/news_card.html' with articles=context.0.left %}
+  {% include 'home/news_card.html' with articles=context.left %}
 </div>
 <div class="col s6">
-  {% include 'home/news_card.html' with articles=context.0.right %}
+  {% include 'home/news_card.html' with articles=context.right %}
 </div>
-<script> $('.tabs').tabs();     $('.lazy').Lazy();</script>
+</div>
+<script> $('.tabs').tabs();     $('.lazy').Lazy(); topicList.push("{{ topic }}") </script>

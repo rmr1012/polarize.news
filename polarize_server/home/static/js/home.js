@@ -6,8 +6,11 @@ $('#search').autocomplete({
   });
 
 var stuck=false;
+var loadSense=500;
+var loading=false;
 $(".small-title").hide();
 $(".small-title").css("opacity",0);
+$(".spin-loader").css("opacity",0)
 
 $(window).scroll(animate_stick);
 $(document).ready(function(){
@@ -19,49 +22,29 @@ globalLoadCount=0
 articleQuery="headlines"
 
 
-function makePlaceholder(){
-  return "<div class='row lazy' id='box-"+globalLoadCount+"' data-loader='newsLoader'> <div class='col s6 libral' style='text-align: center;'>"
-+"<img src='static/img/loader.svg'>"
-+"</div>"
-+"<div class='col s6 conservative' style='text-align: center;'>"
-+"<img src='static/img/loader.svg'>"
-+"</div>"
-+"</div>"
-+"<script> $('#box-"+globalLoadCount+"').Lazy();</script>"
-}
-
-(function($) {
-       $.Lazy('newsLoader', function(element, response) {
-           // just for demonstration, write some text inside element
-           // element.find(".libral h4").html('lib successfully loaded div#' + element.attr('id'))
-           //        .addClass("loaded");
-           // element.find(".conservative h4").html('lib successfully loaded div#' + element.attr('id'))
-           //       .addClass("loaded");
-          console.log('lib successfully loaded div#' + element.attr('id'))
-          globalLoadCount+=1;
 
 
+
+
+function appendNewCard(){
           $.ajax({
                   type: "POST",
                   url: "load",//other option is search
                   dataType: "json",
-                  data : { "topic":articleQuery, "index":globalLoadCount},
+                  data : {topic : topicList},
                   success: function(response) {
                       console.log(response);
-                      element.html(response.card)
+                      $(".card-rack").append(response.card)
+                      topicList.push(response.topic);
+                      loading=false;
+                      $(".spin-loader").css("opacity",0)
                   },
                   error: function(response) {
                       console.log(response);
                   }
           });
-          setTimeout(function () { // just dummy delay for now
-            element.append(makePlaceholder)
-          }, 2000);
+};
 
-           // return loaded state to Lazy
-           response(true);
-       });
-   })(window.jQuery || window.Zepto);
 
 function animate_stick(){
   if ($(window).scrollTop()-$('.card-rack').offset().top+120 >0 & !stuck){
@@ -77,11 +60,8 @@ function animate_stick(){
       console.log("calling left toggle 2");
       $(".small-title").css("opacity",1);
     }, 600);
-
-
-
-
   }
+
   else if ($(window).scrollTop()-$('.card-rack').offset().top+120 <0 & stuck){
     stuck=false;
     console.log("un stuck");
@@ -91,6 +71,12 @@ function animate_stick(){
       $(".small-title").hide();
       $('nav').addClass('s12').removeClass('s8');
     }, 500);
+  }
+  else if ($(window).scrollTop()-($('.card-rack').offset().top+$('.card-rack').height())+$(window).height()+loadSense > 0 & !loading){
+    loading=true;
+    $(".spin-loader").css("opacity",1)
+    console.log("starting to load");
+    appendNewCard();
   }
 
 }
