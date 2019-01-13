@@ -154,8 +154,11 @@ def get_fuzzy_bias(bias, article):
     fuzzy_bias : float, typically between -1 and 1
     note: can exceed mag(1) if instances of adj > nouns
     """
+    if article['description']:
+        text = article['title'] + ' ' + article['description']
+    else:
+        text = article['title'] + ' '
 
-    text = article['title'] + ' ' + article['description']
     content = article['content']
 
     if content is not None:
@@ -248,7 +251,10 @@ def fast_sim(keywords, article):
 
 
 def stack(title, desc, content):
-    text = 3 * title + ' ' + 2 * desc
+    if desc:
+        text = 3 * title + ' ' + 2 * desc
+    else:
+        text = 3 * title
     if content is not None:
         text += ' ' + content
 
@@ -313,7 +319,8 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
     articles = headlines['articles']
 
     for idx, article in enumerate(articles):
-        if article['title'] is None or article['description'] is None or article['content'] is None:
+        if (article['title'] is None) or (article['description'] is None) or (article['content'] is None):
+            print("deleting article"+str(idx))
             del article
             continue
 

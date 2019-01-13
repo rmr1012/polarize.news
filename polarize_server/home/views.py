@@ -75,12 +75,38 @@ def LoadAPI(request):
 @api_view(['GET','POST'])
 @csrf_exempt
 def SearchAPI(request):
+    #print(request.POST)
     if request.method == 'GET':
-        print("haha")
         return render(request, 'home/index.html')
-    else:
-        print("hehe")
-        return render(request, 'home/index.html')
+    else: #POST
+        #try:
+        print("step1")
+        #print(request.data)
+        topic=request.POST.get('topic[]')
+        inquery=request.POST.get('query')
+        #print(topic,index)
+        avalWords=[]
+        for word in topWords:
+            if word not in topic:
+                avalWords.append(word)
+
+        realContext=get_headlines(inquery, page_size=100, sources=relevant_sources_str)
+
+        context = {"context":realContext,"topic":inquery}
+        print("step2")
+        # return render(request, 'wizzard/wizzard.html',context)
+        newCard = render_to_string('home/load_one_row.html', context)
+        print("step3")
+
+        print(type(newCard))
+        #print(newCard)
+        print("step4")
+        return JsonResponse({"card":newCard})
+
+        # except Exception as e:
+        #     print(str(e))
+        #     print("throwing 403")
+        #     return HttpResponseForbidden()
 
 @api_view(['GET','POST'])
 @csrf_exempt

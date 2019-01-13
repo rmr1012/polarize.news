@@ -5,8 +5,39 @@ $('#search').autocomplete({
     data:topWords,
     onAutocomplete: function(val){
           console.log(val);
+          if($("#topic-"+val.replace(/\s+/g, '-').toLowerCase()).length){
+            $([document.documentElement, document.body]).animate({
+                  scrollTop: $("#topic-"+val.replace(/\s+/g, '-').toLowerCase()).offset().top-100
+              }, 1000);
+          }
+          else{
+            insertNewCard(val);
+          }
       }
   });
+  58
+
+document.getElementById('search').onkeypress = function(e){
+    if (!e) e = window.event;
+    var keyCode = e.keyCode || e.which;
+    if (keyCode == '13'){
+      // Enter pressed
+      // console.log("dude")
+      // console.log($("#search").val())
+        var numval=$("#search").val();
+        if($("#topic-"+numval.replace(/\s+/g, '-').toLowerCase()).length){
+          $([document.documentElement, document.body]).animate({
+                scrollTop: $("#topic-"+numval.replace(/\s+/g, '-').toLowerCase()).offset().top-100
+            }, 1000);
+        }
+        else{
+          insertNewCard(numval);
+        }
+
+      return false;
+    }
+  }
+
 
 var stuck=false;
 var loadSense=500;
@@ -28,7 +59,29 @@ articleQuery="headlines"
 
 
 
-
+function insertNewCard(inquery){
+          $.ajax({
+                  type: "POST",
+                  url: "search",//other option is search
+                  dataType: "json",
+                  data : {topic : topicList, query: inquery},
+                  success: function(response) {
+                      console.log(response);
+                      $(".card-rack").prepend(response.card)
+                      topicList.push(response.topic);
+                      loading=false;
+                      $(".spin-loader").css("opacity",0)
+                      setTimeout(function(){
+                        $([document.documentElement, document.body]).animate({
+                              scrollTop: $("#topic-"+inquery.replace(/\s+/g, '-').toLowerCase()).offset().top-100
+                          }, 1000);
+                      },300)
+                  },
+                  error: function(response) {
+                      console.log(response);
+                  }
+          });
+};
 function appendNewCard(){
           $.ajax({
                   type: "POST",

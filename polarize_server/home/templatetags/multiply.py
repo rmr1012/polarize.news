@@ -23,3 +23,7 @@ def mapbias(value):
         return "Fair"
     else:
         return "Neutral"
+
+@register.filter
+def sluggy(value):
+    return value.replace(" ","-")

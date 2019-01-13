@@ -52,7 +52,7 @@
       <div class="nav-wrapper">
         <form>
           <div class="input-field">
-            <input id="search" class="autocomplete" type="search" autocomplete="off" required placeholder="Search Keywords">
+            <input id="search" class="autocomplete" type="search" autocomplete="off" required placeholder="Search Keywords" >
             <label class="label-icon" for="search"><i class="material-icons" style="margin-top: -10px;margin-left: 10px;">search</i></label>
             <i class="material-icons">close</i>
           </div>
@@ -65,7 +65,7 @@
   <div class="container card-rack">
     <div class="row ">
         <div class="col s4"></div>
-        <div class="col s4 topic"  id="topic-{{ topic.0 }}">{{ topic.0 }}</div>
+        <div class="col s4 topic"  id="topic-{{ topic.0|slugify }}">{{ topic.0 }}</div>
         <div class="col s4"></div>
     </div>
     <div class="row">
@@ -78,7 +78,7 @@
     </div>
     <div class="row ">
         <div class="col s4"></div>
-        <div class="col s4 topic"  id="topic-{{ topic.1 }}">{{ topic.1 }}</div>
+        <div class="col s4 topic"  id="topic-{{ topic.1|slugify }}">{{ topic.1 }}</div>
         <div class="col s4"></div>
     </div>
     <div class="row">
@@ -91,7 +91,7 @@
     </div>
     <div class="row ">
         <div class="col s4"></div>
-        <div class="col s4 topic"  id="topic-{{ topic.2 }}">{{ topic.2 }}</div>
+        <div class="col s4 topic"  id="topic-{{ topic.2|slugify }}">{{ topic.2 }}</div>
         <div class="col s4"></div>
     </div>
     <div class="row">
