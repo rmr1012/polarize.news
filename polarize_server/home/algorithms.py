@@ -200,7 +200,7 @@ def get_most_common_keywords(articles, n):
     return df[0:n]
 
 
-def get_headlines(threshold=0.1, page_size=10, sources=None):
+def get_headlines(threshold=0.1, page_size=10, sources=relevant_sources_str):
     """Called every thirty minutes."""
 
     newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
