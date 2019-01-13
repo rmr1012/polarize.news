@@ -78,6 +78,9 @@ TransName = {
     'mashable': 'Mashable'
 }
 
+media_bias_data = os.path.join(os.path.dirname(__file__),'media_bias.csv')
+df = pd.read_csv(media_bias_data)
+
 
 def loadModel(path):
     data = pickle.load(open(path, 'rb'))
@@ -172,8 +175,42 @@ def get_fuzzy_bias(bias, article):
 
     fuzzy = len(adj) / len(nouns)
 
-    return fuzzy*bias
+    try:
+        return filter_bias(fuzzy*bias, article['source']['id'])
+    except (KeyError, Exception):
+        return fuzzy*bias
 
+
+def predicted(bias, std=0.3):
+    """Note: 30% std dev approximated from data"""
+    bins = [-1,-0.75,-0.25,0.25,.75,1]
+    state_data = np.histogram(np.random.normal(bias,std,100),bins=bins)[0]
+    state_data = state_data/np.linalg.norm(state_data)
+    covariance = np.eye(5)*std
+    
+    return state_data.reshape(5,1), covariance
+
+
+def media_bias(df, source):
+    y = np.array(df.loc[df['Source']==source, ['Consistently liberal', 
+                                               'Mostly liberal', 
+                                               'Mixed', 
+                                               'Mostly conservative', 
+                                               'Consistently conservative']])
+    cov = 1./np.array(df.loc[df['Source']==source, ['Overall']])
+    print(source)
+    covariance = np.eye(5)*np.squeeze(cov)
+    return y.reshape(5,1), covariance
+
+
+def filter_bias(fuzzy_value, source):
+    x, P = predicted(fuzzy_value, 0.3)
+    y, Y = media_bias(df, source)
+    xhat = x + np.matmul(P,(y-x))
+    bin_means = np.array([-1,-0.5,0,0.5,1])
+    bias = np.inner(np.squeeze(xhat),bin_means)
+    return bias
+    
 
 def get_keywords(article, remove_duplicates=True, nouns_only=False):
     stacked = stack(article['title'], article['description'], article['content'])
@@ -292,6 +329,7 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
         articles[idx]['bias'] = bias
         articles[idx]['hash'] = hash_
 
+        print('HELLLOOOOOOOO', bias)
         if bias < 0:
             left.append(article)
         elif bias > 0:
@@ -311,20 +349,6 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
         right[i]['hash'] = str(hash(right[i]["title"]))[:-6]
 
     return {"left":left[0:3], "right":right[0:3]}
-
-
-def get_dict(series):
-    d = {
-        'source': series['source']['name'],
-        'title': series['title'],
-        'image': series['urlToImage'],
-        'description': series['description'],
-        'url': series['url'],
-        'hash': series['hash'],
-        'bias': series['bias'],
-        }
-
-    return d
 
 
 relevant_sources = [
@@ -352,7 +376,7 @@ relevant_sources = [
     'time',
     'usa-today',
     'vice-news',
-    ]
+]
 
 relevant_sources_str = ','.join(relevant_sources)
 
