@@ -23,7 +23,7 @@ class HomeView(TemplateView): #some from 48
 
         print(realContext)
         print(dummyContext)
-        context = {'context':dummyContext} # delete dummy when there's real stuff
+        context = {'context':realContext} # delete dummy when there's real stuff
         return render(request, self.template_name,context)
     def post(self, request):
         return render(request, self.template_name,context)

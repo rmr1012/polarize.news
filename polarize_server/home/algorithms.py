@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import re
+import os
 import numpy as np
 import pandas as pd
 import pprint
@@ -317,7 +318,7 @@ def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
         else:
             break
 
-    return (left0, right0)
+    return [{"left":left0, "right":right0}]
 
 
 def get_dict(series):
