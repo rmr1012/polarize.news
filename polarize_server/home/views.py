@@ -19,7 +19,7 @@ class HomeView(TemplateView): #some from 48
         # queryset = CardRackCache.objects.filter(keyword=keyword).order_by('-timestamp')
         # if(queryset): # if there's a recent copy avail, grab that
         #     context = {'context':queryset[0]['jsonStr']}
-        realContext =  get_headlines(page_size=10, sources=relevant_sources_str)
+        realContext =  get_headlines(page_size=100, sources=relevant_sources_str)
 
         print(realContext)
         print(dummyContext)
