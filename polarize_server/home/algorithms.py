@@ -20,6 +20,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 # initialize connection to newsapi
 newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
 
+hashes_used = []
+
 relevant_sources = [
     'abc-news',
     'al-jazeera-english',
@@ -187,15 +189,15 @@ def predicted(bias, std=0.3):
     state_data = np.histogram(np.random.normal(bias,std,100),bins=bins)[0]
     state_data = state_data/np.linalg.norm(state_data)
     covariance = np.eye(5)*std
-    
+
     return state_data.reshape(5,1), covariance
 
 
 def media_bias(df, source):
-    y = np.array(df.loc[df['Source']==source, ['Consistently liberal', 
-                                               'Mostly liberal', 
-                                               'Mixed', 
-                                               'Mostly conservative', 
+    y = np.array(df.loc[df['Source']==source, ['Consistently liberal',
+                                               'Mostly liberal',
+                                               'Mixed',
+                                               'Mostly conservative',
                                                'Consistently conservative']])
     cov = 1./np.array(df.loc[df['Source']==source, ['Overall']])
     print(source)
@@ -210,7 +212,7 @@ def filter_bias(fuzzy_value, source):
     bin_means = np.array([-1,-0.5,0,0.5,1])
     bias = np.inner(np.squeeze(xhat),bin_means)
     return bias
-    
+
 
 def get_keywords(article, remove_duplicates=True, nouns_only=False):
     stacked = stack(article['title'], article['description'], article['content'])
@@ -329,11 +331,12 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
         articles[idx]['bias'] = bias
         articles[idx]['hash'] = hash_
 
-        print('HELLLOOOOOOOO', bias)
-        if bias < 0:
+        if bias < 0 and hash_ not in hashes_used:
             left.append(article)
-        elif bias > 0:
+        elif bias > 0 and hash_ not in hashes_used:
             right.append(article)
+    
+        hashes_used.append(hash_)
 
     # clean up some of the data
     for i in range(0,len(left)):
