@@ -216,7 +216,7 @@ def get_most_common_keywords(articles, n):
     return df[0:n]
 
 
-def get_headlines(topic='government shutdown', threshold=0.02, page_size=10, sources=relevant_sources_str):
+def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_str):
     """Called every thirty minutes."""
 
     newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
@@ -244,7 +244,9 @@ def get_headlines(topic='government shutdown', threshold=0.02, page_size=10, sou
                             article['content']))
 
         bias = get_fuzzy_bias(get_binary_bias(inStr, model, vocab), article)
+        hash_ = hash(article['title'])
         articles[idx]['bias'] = bias
+        articles[idx]['hash'] = hash_
 
         if bias < 0:
             left.append(article)
