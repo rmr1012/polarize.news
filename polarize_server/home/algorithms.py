@@ -251,6 +251,15 @@ def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
   # get related articles
 
     first_article = articles[1]
+
+    inStr = clean(stack(first_article['title'],
+                    first_article['description'],
+                    first_article['content']))
+
+    first_article['bias'] = \
+        get_fuzzy_bias(get_binary_bias(inStr, model, vocab),
+                        first_article)
+
     most_common_kws = ','.join(list(get_most_common_keywords([first_article],
             5).keys()))
 
