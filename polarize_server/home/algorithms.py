@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import re
+import os
 import numpy as np
 import pandas as pd
 import pprint
@@ -32,8 +33,13 @@ def get_binary_bias(inStr, model, vocab):
     X1 = cv1.transform([inStr])
     return model.predict(X1) * 2 - 1
 
+<<<<<<< HEAD
 
 (model, vocab) = loadModel('home/model.pk')
+=======
+realpath = os.path.dirname(__file__)
+(model, vocab) = loadModel(os.path.join(realpath,'model.pk'))
+>>>>>>> e5330b732a4253bc1ff12a3cc8ca2cf914493c5d
 
 
 def get_fuzzy_bias(bias, article):
@@ -199,7 +205,7 @@ def get_most_common_keywords(articles, n):
     return df[0:n]
 
 
-def get_headlines(threshold=0.1, page_size=10, sources=None):
+def get_headlines(threshold=0.1, page_size=10, sources=relevant_sources_str):
     """Called every thirty minutes."""
 
     newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
