@@ -311,9 +311,10 @@ relevant_sources = [
 relevant_sources_str = ','.join(relevant_sources)
 
 def main():
-    article = get_headlines(page_size=10, sources=relevant_sources_str)
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(article)
+    # article = get_headlines(page_size=10, sources=relevant_sources_str)
+    # pp = pprint.PrettyPrinter(indent=4)
+    # pp.pprint(article)
+    pass
 
 
 if __name__ == '__main__':
