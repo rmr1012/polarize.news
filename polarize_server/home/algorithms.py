@@ -203,7 +203,6 @@ def media_bias(df, source):
                                                'Mostly conservative',
                                                'Consistently conservative']])
     cov = 1./np.array(df.loc[df['Source']==source, ['Overall']])
-    print(source)
     covariance = np.eye(5)*np.squeeze(cov)
     return y.reshape(5,1), covariance
 
@@ -320,7 +319,6 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
 
     for idx, article in enumerate(articles):
         if (article['title'] is None) or (article['description'] is None) or (article['content'] is None):
-            print("deleting article"+str(idx))
             del article
             continue
 
@@ -342,7 +340,7 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
         elif bias > 0 and hash_ not in hashes_used:
             right.append(article)
 
-        hashes_used.append(hash_)
+        # hashes_used.append(hash_)
 
     # clean up some of the data
     for i in range(0,len(left)):
@@ -390,9 +388,6 @@ relevant_sources = [
 relevant_sources_str = ','.join(relevant_sources)
 
 def main():
-    # article = get_headlines(page_size=10, sources=relevant_sources_str)
-    # pp = pprint.PrettyPrinter(indent=4)
-    # pp.pprint(article)
     pass
 
 

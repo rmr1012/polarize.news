@@ -12,6 +12,8 @@ from home.algorithms import *
 from random import *
 topWords= ["donald trump","goverment shutdown","muller investigation","border","immigration","abortion","supreme court","police","south china sea","democrats","republicans","syria","mexico","senate","white house","california","election","africa","education","nancy pelosi","campaign"]
 
+topWords = ['republicans', 'alexandria ocasio-cortez', 'Russian Investigation', 'Government Shutdown', 'Border Wall',  'Nancy Pelosi']
+
 class HomeView(TemplateView): #some from 48
     template_name = 'home/index.html'
     def get(self, request):
@@ -39,7 +41,7 @@ def LoadAPI(request):
         return render(request, 'home/index.html')
     else: #POST
         #try:
-        print("step1")
+        # print("step1")
         #print(request.data)
         topic=request.POST.get('topic[]')
 
@@ -50,21 +52,21 @@ def LoadAPI(request):
                 avalWords.append(word)
 
         freeInd=sample(range(0,len(avalWords)-1 ), 1)[0]
-        print(avalWords)
+        # print(avalWords)
 
         keyword=avalWords[freeInd]
-        print(keyword)
+        # print(keyword)
         realContext=get_headlines(keyword, page_size=100, sources=relevant_sources_str)
 
         context = {"context":realContext,"topic":keyword}
-        print("step2")
+        # print("step2")
         # return render(request, 'wizzard/wizzard.html',context)
         newCard = render_to_string('home/load_one_row.html', context)
-        print("step3")
+        # print("step3")
 
-        print(type(newCard))
+        # print(type(newCard))
         #print(newCard)
-        print("step4")
+        # print("step4")
         return JsonResponse({"card":newCard})
 
         # except Exception as e:
@@ -80,7 +82,7 @@ def SearchAPI(request):
         return render(request, 'home/index.html')
     else: #POST
         #try:
-        print("step1")
+        # print("step1")
         #print(request.data)
         topic=request.POST.get('topic[]')
         inquery=request.POST.get('query')
@@ -93,14 +95,14 @@ def SearchAPI(request):
         realContext=get_headlines(inquery, page_size=100, sources=relevant_sources_str)
 
         context = {"context":realContext,"topic":inquery}
-        print("step2")
+        # print("step2")
         # return render(request, 'wizzard/wizzard.html',context)
         newCard = render_to_string('home/load_one_row.html', context)
-        print("step3")
+        # print("step3")
 
-        print(type(newCard))
-        #print(newCard)
-        print("step4")
+        # print(type(newCard))
+        # print(newCard)
+        # print("step4")
         return JsonResponse({"card":newCard})
 
         # except Exception as e:
@@ -112,5 +114,6 @@ def SearchAPI(request):
 @csrf_exempt
 def FetchAPI(request):
     if request.method == 'GET':
-        print(request.GET)
+        pass
+        # print(request.GET)
     return HttpResponse('')

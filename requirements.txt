@@ -4,5 +4,5 @@ scikit-learn
 numpy
 nltk
 psycopg2
-django_restframework
+djangorestframework
 celery
