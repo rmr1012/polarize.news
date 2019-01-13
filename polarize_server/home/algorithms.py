@@ -60,7 +60,7 @@ def get_binary_bias(inStr, model, vocab):
 
     cv1.fit([inStr])
     X1 = cv1.transform([inStr])
-    return model.predict(X1) * 2 - 1
+    return np.float(model.predict(X1) * 2 - 1)
 
 realpath = os.path.dirname(__file__)
 (model, vocab) = loadModel(os.path.join(realpath,'model.pk'))
@@ -68,18 +68,18 @@ realpath = os.path.dirname(__file__)
 
 def get_fuzzy_bias(bias, article):
     """Calculates a fuzzy bias value from a binary bias value and the article
-  keywords.
+    keywords.
 
-  Parameters
-  ----------
-  bias : int (-1,1)
-  article : dict
+    Parameters
+    ----------
+    bias : int (-1,1)
+    article : dict
 
-  Returns
-  -------
-  fuzzy_bias : float, typically between -1 and 1
+    Returns
+    -------
+    fuzzy_bias : float, typically between -1 and 1
     note: can exceed mag(1) if instances of adj > nouns
-  """
+    """
 
     text = article['title'] + ' ' + article['description']
     content = article['content']
