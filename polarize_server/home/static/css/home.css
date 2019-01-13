@@ -11,6 +11,15 @@ nav .input-field label i {
 .bias-meter .badge{
   color:white;
 }
+.topic {
+  color: whitesmoke;
+  font-weight: bold;
+  font-size: 1.4em;
+  background-color: rgba(0, 0, 0, 0.6);
+  text-align: center;
+  padding: 0.5em;
+  border-radius: 0.1em;
+}
 .small-title{
   text-align: center;
 }

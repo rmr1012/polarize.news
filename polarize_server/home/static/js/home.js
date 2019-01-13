@@ -2,7 +2,10 @@
 var topWords= {"trump":null,"goverment shutdown":null,"muller investigation":null,"travewar":null,"border":null,"immigration":null,"abortion":null,"supreme court":null,"police":null,"south china sea":null,"democrats":null,"republicans":null,"syria":null,"mexico":null,"senate":null,"white house":null,"california":null,"election":null,"africa":null,"education":null,"nancy pelosi":null,"campaign":null};
 
 $('#search').autocomplete({
-    data:topWords
+    data:topWords,
+    onAutocomplete: function(val){
+          console.log(val);
+      }
   });
 
 var stuck=false;
