@@ -33,18 +33,18 @@ def get_binary_bias(inStr, model, vocab):
     return model.predict(X1) * 2 - 1
 
 
-(model, vocab) = loadModel('model.pk')
+(model, vocab) = loadModel('home/model.pk')
 
 
 def get_fuzzy_bias(bias, article):
     """Calculates a fuzzy bias value from a binary bias value and the article
   keywords.
-  
+
   Parameters
   ----------
   bias : int (-1,1)
   article : dict
-  
+
   Returns
   -------
   fuzzy_bias : float, typically between -1 and 1
@@ -328,11 +328,11 @@ relevant_sources = [
 
 relevant_sources_str = ','.join(relevant_sources)
 
-def main():
+def getHeadlineDict():
     article = get_headlines(page_size=10, sources=relevant_sources_str)
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(article)
 
 
 if __name__ == '__main__':
-    main()
+    getHeadlineDict()
