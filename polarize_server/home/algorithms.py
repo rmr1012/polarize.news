@@ -18,7 +18,7 @@ import pickle
 from sklearn.feature_extraction.text import CountVectorizer
 
 # initialize connection to newsapi
-newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
+newsapi = NewsApiClient(api_key='9626af5c1fac45dbb0363c8aac416905')
 
 hashes_used = []
 
@@ -302,7 +302,6 @@ def get_most_common_keywords(articles, n):
 
 def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_str):
     """Called every thirty minutes."""
-    newsapi = NewsApiClient(api_key='a3b76c5e036947daaa13d4aaf3acab5c')
     if sources == None:
         headlines = newsapi.get_top_headlines(language='en', country='us', page_size=10)
     else:
@@ -335,7 +334,7 @@ def get_headlines(topic, threshold=0.02, page_size=10, sources=relevant_sources_
             left.append(article)
         elif bias > 0 and hash_ not in hashes_used:
             right.append(article)
-    
+
         hashes_used.append(hash_)
 
     # clean up some of the data
