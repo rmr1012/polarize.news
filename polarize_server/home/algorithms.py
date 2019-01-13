@@ -265,8 +265,7 @@ def get_headlines(threshold=0.01, page_size=10, sources=relevant_sources_str):
             5).keys()))
 
     related_articles = newsapi.get_everything(language='en',
-                                              q=most_common_kws[0],
-                                              sort_by='relevancy',
+                                              q='politics',
                                               page_size=page_size)['articles']
 
     for (idx, rarticle) in enumerate(related_articles):
