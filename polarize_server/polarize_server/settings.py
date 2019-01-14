@@ -23,7 +23,7 @@ MYVERSION=random.randint(1,100)
 SECRET_KEY = 'hpfab*aba#nt^fg@xd##gg5ix)fet@)41t6dhvn4sbvq&4#pm('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG=True
 
 ALLOWED_HOSTS = ['107.170.232.49', 'polarized.news']
 
