@@ -6,4 +6,4 @@ nltk
 psycopg2
 djangorestframework
 pandas
-newspi-python
+newsapi-python
