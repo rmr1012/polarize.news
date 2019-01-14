@@ -5,4 +5,5 @@ numpy
 nltk
 psycopg2
 djangorestframework
-celery
+pandas
+newspi-python
